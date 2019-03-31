@@ -24,7 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 
 @ExtendWith(MockitoExtension.class)
-public abstract class JdbcCrudDaoTests<T,ID> {
+public abstract class JdbcCrudDaoTests<T,ID>{
 
 	@Mock
 	protected DataSource ds;
@@ -38,16 +38,8 @@ public abstract class JdbcCrudDaoTests<T,ID> {
 	@Spy
 	protected ResultSet rs;
 	
-	public abstract List<T> invokeDaoSearchAll();
+	public abstract DaoInvocation<T, ID> buildDaoInvocation();
 	
-	public abstract T invokeDaoFindById(ID id);
-	
-	public abstract void invokeDaoCreate(T entity);
-	
-	public abstract void invokeDaoUpdate(T entity);
-	
-	public abstract void invokeDaoDelete(T entity);
-
 	public abstract void setup() throws SQLException;
 
 	public abstract Map<String, Object> stubSelectOneResultSet();
