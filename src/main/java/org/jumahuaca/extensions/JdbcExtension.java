@@ -1,10 +1,12 @@
-package org.jumahuaca.examples.jdbc.dao;
+package org.jumahuaca.extensions;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -16,46 +18,74 @@ import java.util.Map.Entry;
 
 import javax.sql.DataSource;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Spy;
+import org.jumahuaca.examples.jdbc.dao.MockedConnection;
+import org.jumahuaca.examples.jdbc.dao.MockedDatasource;
+import org.jumahuaca.examples.jdbc.dao.MockedPreparedStatement;
+import org.jumahuaca.examples.jdbc.dao.SpiedResultSet;
+import org.jumahuaca.exceptions.MoreThanOneMockToInjectException;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.TestInstancePostProcessor;
+import org.junit.platform.commons.support.AnnotationSupport;
+import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 
-@ExtendWith(MockitoExtension.class)
-public abstract class JdbcCrudDaoTests<T,ID>{
+public class JdbcExtension implements TestInstancePostProcessor {
 
-	@Mock
-	protected DataSource ds;
+	public static class Builder {
 
-	@Mock
-	protected Connection connection;
+		public JdbcExtension build() {
+			return new JdbcExtension();
+		}
+	}
 
-	@Mock
-	protected PreparedStatement ps;
+	public static Builder builder() {
+		return new Builder();
+	}
 
-	@Spy
-	protected ResultSet rs;
+	@Override
+	public void postProcessTestInstance(Object testInstance, ExtensionContext context) throws Exception {
+		injectMock(testInstance, DataSource.class, MockedDatasource.class);
+		injectMock(testInstance, Connection.class, MockedConnection.class);
+		injectMock(testInstance, PreparedStatement.class, MockedPreparedStatement.class);
+		injectSpy(testInstance, ResultSet.class, SpiedResultSet.class);
+	}
+
+	private void injectMock(Object testInstance, Class<?> fieldType, Class<? extends Annotation> annotationType)
+			throws IllegalAccessException {
+		List<Field> fields = AnnotationSupport.findPublicAnnotatedFields(testInstance.getClass(), fieldType,
+				annotationType);
+		if (fields.size() > 1) {
+			throw new MoreThanOneMockToInjectException();
+		}
+		if (fields != null && !fields.isEmpty()) {
+			Field field = fields.iterator().next();
+			field.set(testInstance, Mockito.mock(fieldType));
+		}
+	}
+
+	private void injectSpy(Object testInstance, Class<?> fieldType, Class<? extends Annotation> annotationType)
+			throws IllegalAccessException {
+		List<Field> fields = AnnotationSupport.findPublicAnnotatedFields(testInstance.getClass(), fieldType,
+				annotationType);
+		if (fields.size() > 1) {
+			throw new MoreThanOneMockToInjectException();
+		}
+		if (fields != null && !fields.isEmpty()) {
+			Field field = fields.iterator().next();
+			field.set(testInstance, Mockito.spy(fieldType));
+		}
+	}
 	
-	public abstract DaoInvocation<T, ID> buildDaoInvocation();
-	
-	public abstract void setup() throws SQLException;
-
-	public abstract Map<String, Object> stubSelectOneResultSet();
-
-	public abstract Map<String, List<Object>> stubSelectAllResultSet();
-
-	public void stubDatasource() throws SQLException {
+	public void stubDatasource(DataSource ds, Connection connection) throws SQLException {
 		when(ds.getConnection()).thenReturn(connection);
 	}
 	
-	public void stubSelectOneQueryOk() throws SQLException {
+	public void stubSelectOneQueryOk(PreparedStatement ps, ResultSet rs, Connection connection, Map<String, Object> stubbedSelectOneResult) throws SQLException {
 		when(ps.executeQuery()).thenReturn(rs);
 		when(rs.next()).thenReturn(true, false);
-		Map<String, Object> resultSet = stubSelectOneResultSet();
 
-		for (Entry<String, Object> entry : resultSet.entrySet()) {
+		for (Entry<String, Object> entry : stubbedSelectOneResult.entrySet()) {
 			String k = entry.getKey();
 			Object v = entry.getValue();
 			if (v instanceof String) {
@@ -73,35 +103,34 @@ public abstract class JdbcCrudDaoTests<T,ID>{
 		when(connection.prepareStatement(anyString())).thenReturn(ps);
 	}
 
-	public void verifyResourceClose() throws SQLException {
+	public void verifyResourceClose(PreparedStatement ps, Connection connection) throws SQLException {
 		verify(connection).close();
 		verify(ps).close();
 	}
 
-	public void verifyConnectionClose() throws SQLException {
+	public void verifyConnectionClose(Connection connection) throws SQLException {
 		verify(connection).close();
 	}
 
-	public void verifyExecuteUpdate() throws SQLException {
+	public void verifyExecuteUpdate(PreparedStatement ps) throws SQLException {
 		verify(ps).executeUpdate();
 	}
 
-	public void stubSelectOneQueryNotFound() throws SQLException {
+	public void stubSelectOneQueryNotFound(PreparedStatement ps, Connection connection, ResultSet rs) throws SQLException {
 		when(ps.executeQuery()).thenReturn(rs);
 		when(rs.next()).thenReturn(false, false);
 		when(connection.prepareStatement(anyString())).thenReturn(ps);
 	}
 
-	public void stubSelectOneQueryError() throws SQLException {
+	public void stubSelectOneQueryError(PreparedStatement ps, Connection connection, ResultSet rs) throws SQLException {
 		when(ps.executeQuery()).thenThrow(SQLException.class);
 		when(connection.prepareStatement(anyString())).thenReturn(ps);
 	}
 
-	public void stubSelectAllQueryOk() throws SQLException {
-		Map<String, List<Object>> results = stubSelectAllResultSet();
+	public void stubSelectAllQueryOk(PreparedStatement ps, Connection connection, ResultSet rs, Map<String, List<Object>> stubbedSelectAll) throws SQLException {
 		when(rs.next()).thenReturn(true, true, false);
 		when(ps.executeQuery()).thenReturn(rs);
-		for (Entry<String, List<Object>> entryResult : results.entrySet()) {
+		for (Entry<String, List<Object>> entryResult : stubbedSelectAll.entrySet()) {
 			String k = entryResult.getKey();
 			final List<Object> v = entryResult.getValue();
 
@@ -162,18 +191,19 @@ public abstract class JdbcCrudDaoTests<T,ID>{
 
 	}
 
-	public void stubConnectionError() throws SQLException {
+	public void stubConnectionError(Connection connection) throws SQLException {
 		when(connection.prepareStatement(anyString())).thenThrow(SQLException.class);
 	}
 
-	public void stubQueryOk() throws SQLException {
+	public void stubQueryOk(Connection connection,PreparedStatement ps) throws SQLException {
 		when(connection.prepareStatement(anyString())).thenReturn(ps);
 	}
 	
-	public void stubSelectAllNotFound() throws SQLException {
+	public void stubSelectAllNotFound(PreparedStatement ps, Connection connection, ResultSet rs) throws SQLException {
 		when(connection.prepareStatement(anyString())).thenReturn(ps);
 		when(ps.executeQuery()).thenReturn(rs);
 		when(rs.next()).thenReturn(false);
 	}
+
 
 }
