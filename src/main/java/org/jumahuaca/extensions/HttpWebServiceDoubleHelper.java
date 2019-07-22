@@ -2,7 +2,7 @@ package org.jumahuaca.extensions;
 
 import java.util.List;
 
-public interface SpringControllerCrudExtensionHelper<T> {
+public interface HttpWebServiceDoubleHelper<T> {
 	
 	List<T> mockSelectAllResult();
 	
@@ -18,6 +18,8 @@ public interface SpringControllerCrudExtensionHelper<T> {
 
 	void stubRepositoryFindByIdNotFound(T mockedResult);
 
+	void stubRepositoryFindByIdError(T mockedResult);
+
 	void stubRepositoryUpdateOk(T mockedResult);
 
 	void stubRepositoryUpdateError(T mockedResult);
@@ -26,4 +28,15 @@ public interface SpringControllerCrudExtensionHelper<T> {
 
 	void stubRepositoryDeleteError(T mockedResult);
 
+	void stubRepositoryCreateOk(T mockedResult);
+	
+	void stubRepositoryCreateServerError(T mockedResult);
+
+	void stubRepositoryCreateUknownError(T mockedResult);
+
+	void stubRepositoryUpdateUknownError(T mockedResult);
+
+	void stubRepositoryDeleteUknownError(T mockedResult);
+
+	void stubRepositoryDeleteNotFoundError(T mockedResult);
 }
