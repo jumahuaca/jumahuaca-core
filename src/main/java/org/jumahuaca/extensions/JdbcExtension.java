@@ -77,15 +77,15 @@ public class JdbcExtension implements TestInstancePostProcessor {
 		}
 	}
 	
-	public void stubDatasource(DataSource ds, Connection connection) throws SQLException {
+	public void mockDatasource(DataSource ds, Connection connection) throws SQLException {
 		when(ds.getConnection()).thenReturn(connection);
 	}
 	
-	public void stubSelectOneQueryOk(PreparedStatement ps, ResultSet rs, Connection connection, Map<String, Object> stubbedSelectOneResult) throws SQLException {
+	public void mockSelectOneQueryOk(PreparedStatement ps, ResultSet rs, Connection connection, Map<String, Object> mockedSelectOneResult) throws SQLException {
 		when(ps.executeQuery()).thenReturn(rs);
 		when(rs.next()).thenReturn(true, false);
 
-		for (Entry<String, Object> entry : stubbedSelectOneResult.entrySet()) {
+		for (Entry<String, Object> entry : mockedSelectOneResult.entrySet()) {
 			String k = entry.getKey();
 			Object v = entry.getValue();
 			if (v instanceof String) {
@@ -116,21 +116,21 @@ public class JdbcExtension implements TestInstancePostProcessor {
 		verify(ps).executeUpdate();
 	}
 
-	public void stubSelectOneQueryNotFound(PreparedStatement ps, Connection connection, ResultSet rs) throws SQLException {
+	public void mockSelectOneQueryNotFound(PreparedStatement ps, Connection connection, ResultSet rs) throws SQLException {
 		when(ps.executeQuery()).thenReturn(rs);
 		when(rs.next()).thenReturn(false, false);
 		when(connection.prepareStatement(anyString())).thenReturn(ps);
 	}
 
-	public void stubSelectOneQueryError(PreparedStatement ps, Connection connection, ResultSet rs) throws SQLException {
+	public void mockSelectOneQueryError(PreparedStatement ps, Connection connection, ResultSet rs) throws SQLException {
 		when(ps.executeQuery()).thenThrow(SQLException.class);
 		when(connection.prepareStatement(anyString())).thenReturn(ps);
 	}
 
-	public void stubSelectAllQueryOk(PreparedStatement ps, Connection connection, ResultSet rs, Map<String, List<Object>> stubbedSelectAll) throws SQLException {
+	public void mockSelectAllQueryOk(PreparedStatement ps, Connection connection, ResultSet rs, Map<String, List<Object>> mockedSelectAll) throws SQLException {
 		when(rs.next()).thenReturn(true, true, false);
 		when(ps.executeQuery()).thenReturn(rs);
-		for (Entry<String, List<Object>> entryResult : stubbedSelectAll.entrySet()) {
+		for (Entry<String, List<Object>> entryResult : mockedSelectAll.entrySet()) {
 			String k = entryResult.getKey();
 			final List<Object> v = entryResult.getValue();
 
@@ -191,15 +191,15 @@ public class JdbcExtension implements TestInstancePostProcessor {
 
 	}
 
-	public void stubConnectionError(Connection connection) throws SQLException {
+	public void mockConnectionError(Connection connection) throws SQLException {
 		when(connection.prepareStatement(anyString())).thenThrow(SQLException.class);
 	}
 
-	public void stubQueryOk(Connection connection,PreparedStatement ps) throws SQLException {
+	public void mockQueryOk(Connection connection,PreparedStatement ps) throws SQLException {
 		when(connection.prepareStatement(anyString())).thenReturn(ps);
 	}
 	
-	public void stubSelectAllNotFound(PreparedStatement ps, Connection connection, ResultSet rs) throws SQLException {
+	public void mockSelectAllNotFound(PreparedStatement ps, Connection connection, ResultSet rs) throws SQLException {
 		when(connection.prepareStatement(anyString())).thenReturn(ps);
 		when(ps.executeQuery()).thenReturn(rs);
 		when(rs.next()).thenReturn(false);

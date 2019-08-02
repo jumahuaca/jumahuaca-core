@@ -18,26 +18,26 @@ public class DropwizardResourceCrudExtension <T> implements Extension{
 	
 	public Response requestAllShouldWork(HttpWebServiceDoubleHelper<T> helper, String url, ResourceExtension resources){
 		List<T> mockedResult = helper.mockSelectAllResult();
-		helper.stubRepositoryFindAllOk(mockedResult);		
+		helper.mockRepositoryFindAllOk(mockedResult);		
 		Response response = resources.target(url).request().get(Response.class);
 		return response;
 	}
 	
 	public Response requestAllShouldNotWorkBecauseOfServerError(HttpWebServiceDoubleHelper<T> helper, String url, ResourceExtension resources) {
-		helper.stubRepositoryFindAllError();		
+		helper.mockRepositoryFindAllError();		
 		Response response = resources.target(url).request().get(Response.class);
 		return response;
 	}
 	
 	public Response requestAllShouldNotWorkBecauseOfUnknownError(HttpWebServiceDoubleHelper<T> helper, String url, ResourceExtension resources) throws SQLException {
-		helper.stubRepositoryFindAllError();		
+		helper.mockRepositoryFindAllError();		
 		Response response = resources.target(url).request().get(Response.class);
 		return response;		
 	}
 	
 	public Response requestOneShouldWork(HttpWebServiceDoubleHelper<T> helper, String url, ResourceExtension resources, Map<String,String> templateResolver) throws SQLException {
 		T mockedResult = helper.mockOne();
-		helper.stubRepositoryFindByIdOk(mockedResult);	
+		helper.mockRepositoryFindByIdOk(mockedResult);	
 		WebTarget webTarget = resources.target(url);
 		for (Entry<String,String> entry : templateResolver.entrySet()) {
 			webTarget = webTarget.resolveTemplate(entry.getKey(), entry.getValue());
@@ -48,7 +48,7 @@ public class DropwizardResourceCrudExtension <T> implements Extension{
 	
 	public Response requestOneShouldNotWorkBecauseOfServerError(HttpWebServiceDoubleHelper<T> helper, String url, ResourceExtension resources, Map<String,String> templateResolver) throws SQLException {
 		T mockedResult = helper.mockOne();
-		helper.stubRepositoryFindByIdError(mockedResult);
+		helper.mockRepositoryFindByIdError(mockedResult);
 		WebTarget webTarget = resources.target(url);
 		for (Entry<String,String> entry : templateResolver.entrySet()) {
 			webTarget = webTarget.resolveTemplate(entry.getKey(), entry.getValue());
@@ -59,7 +59,7 @@ public class DropwizardResourceCrudExtension <T> implements Extension{
 	
 	public Response requestOneShouldNotWorkBecauseOfNotFoundError(HttpWebServiceDoubleHelper<T> helper, String url, ResourceExtension resources, Map<String,String> templateResolver) throws SQLException {
 		T mockedResult = helper.mockOne();
-		helper.stubRepositoryFindByIdNotFound(mockedResult);
+		helper.mockRepositoryFindByIdNotFound(mockedResult);
 		WebTarget webTarget = resources.target(url);
 		for (Entry<String,String> entry : templateResolver.entrySet()) {
 			webTarget = webTarget.resolveTemplate(entry.getKey(), entry.getValue());
@@ -74,49 +74,49 @@ public class DropwizardResourceCrudExtension <T> implements Extension{
 	
 	public Response postShouldWork(HttpWebServiceDoubleHelper<T> helper, String url, ResourceExtension resources) {
 		T mockedResult = helper.mockOne();
-		helper.stubRepositoryCreateOk(mockedResult);
+		helper.mockRepositoryCreateOk(mockedResult);
 		Response response = resources.target(url).request().post(Entity.entity(mockedResult, MediaType.APPLICATION_JSON));
 		return response;
 	}
 	
 	public Response postShouldNotWorkBecauseOfServerError(HttpWebServiceDoubleHelper<T> helper, String url, ResourceExtension resources) {
 		T mockedResult = helper.mockOne();
-		helper.stubRepositoryCreateServerError(mockedResult);
+		helper.mockRepositoryCreateServerError(mockedResult);
 		Response response = resources.target(url).request().post(Entity.entity(mockedResult, MediaType.APPLICATION_JSON));
 		return response;
 	}
 	
 	public Response postShouldNotWorkBecauseOfUknownError(HttpWebServiceDoubleHelper<T> helper, String url, ResourceExtension resources) {
 		T mockedResult = helper.mockOne();
-		helper.stubRepositoryCreateUknownError(mockedResult);
+		helper.mockRepositoryCreateUknownError(mockedResult);
 		Response response = resources.target(url).request().post(Entity.entity(mockedResult, MediaType.APPLICATION_JSON));
 		return response;
 	}
 	
 	public Response putShouldWork(HttpWebServiceDoubleHelper<T> helper, String url, ResourceExtension resources) {
 		T mockedResult = helper.mockOne();
-		helper.stubRepositoryUpdateOk(mockedResult);
+		helper.mockRepositoryUpdateOk(mockedResult);
 		Response response = resources.target(url).request().put(Entity.entity(mockedResult, MediaType.APPLICATION_JSON));
 		return response;
 	}
 	
 	public Response putShouldNotWorkBecauseOfServerError(HttpWebServiceDoubleHelper<T> helper, String url, ResourceExtension resources) {
 		T mockedResult = helper.mockOne();
-		helper.stubRepositoryUpdateError(mockedResult);
+		helper.mockRepositoryUpdateError(mockedResult);
 		Response response = resources.target(url).request().put(Entity.entity(mockedResult, MediaType.APPLICATION_JSON));
 		return response;
 	}
 	
 	public Response putShouldNotWorkBecauseOfUknownError(HttpWebServiceDoubleHelper<T> helper, String url, ResourceExtension resources) {
 		T mockedResult = helper.mockOne();
-		helper.stubRepositoryUpdateUknownError(mockedResult);
+		helper.mockRepositoryUpdateUknownError(mockedResult);
 		Response response = resources.target(url).request().put(Entity.entity(mockedResult, MediaType.APPLICATION_JSON));
 		return response;
 	}
 	
 	public Response deleteShouldWork(HttpWebServiceDoubleHelper<T> helper, String url, ResourceExtension resources, Map<String,String> templateResolver) throws SQLException {
 		T mockedResult = helper.mockOne();
-		helper.stubRepositoryDeleteOk(mockedResult);	
+		helper.mockRepositoryDeleteOk(mockedResult);	
 		WebTarget webTarget = resources.target(url);
 		for (Entry<String,String> entry : templateResolver.entrySet()) {
 			webTarget = webTarget.resolveTemplate(entry.getKey(), entry.getValue());
@@ -127,7 +127,7 @@ public class DropwizardResourceCrudExtension <T> implements Extension{
 	
 	public Response deleteShouldNotWorkBecauseOfServerError(HttpWebServiceDoubleHelper<T> helper, String url, ResourceExtension resources, Map<String,String> templateResolver) throws SQLException {
 		T mockedResult = helper.mockOne();
-		helper.stubRepositoryDeleteError(mockedResult);	
+		helper.mockRepositoryDeleteError(mockedResult);	
 		WebTarget webTarget = resources.target(url);
 		for (Entry<String,String> entry : templateResolver.entrySet()) {
 			webTarget = webTarget.resolveTemplate(entry.getKey(), entry.getValue());
@@ -138,7 +138,7 @@ public class DropwizardResourceCrudExtension <T> implements Extension{
 	
 	public Response deleteShouldNotWorkBecauseOfUknownError(HttpWebServiceDoubleHelper<T> helper, String url, ResourceExtension resources, Map<String,String> templateResolver) throws SQLException {
 		T mockedResult = helper.mockOne();
-		helper.stubRepositoryDeleteUknownError(mockedResult);	
+		helper.mockRepositoryDeleteUknownError(mockedResult);	
 		WebTarget webTarget = resources.target(url);
 		for (Entry<String,String> entry : templateResolver.entrySet()) {
 			webTarget = webTarget.resolveTemplate(entry.getKey(), entry.getValue());
@@ -149,7 +149,7 @@ public class DropwizardResourceCrudExtension <T> implements Extension{
 	
 	public Response deleteShouldNotWorkBecauseOfNotFoundError(HttpWebServiceDoubleHelper<T> helper, String url, ResourceExtension resources, Map<String,String> templateResolver) throws SQLException {
 		T mockedResult = helper.mockOne();
-		helper.stubRepositoryDeleteNotFoundError(mockedResult);	
+		helper.mockRepositoryDeleteNotFoundError(mockedResult);	
 		WebTarget webTarget = resources.target(url);
 		for (Entry<String,String> entry : templateResolver.entrySet()) {
 			webTarget = webTarget.resolveTemplate(entry.getKey(), entry.getValue());

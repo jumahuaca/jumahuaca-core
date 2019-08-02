@@ -6,37 +6,37 @@ public interface HttpWebServiceDoubleHelper<T> {
 	
 	List<T> mockSelectAllResult();
 	
-	void stubRepositoryFindAllOk(List<T> mockedResult);
+	void mockRepositoryFindAllOk(List<T> mockedResult);
 
-	void stubRepositoryFindAllNotFound();
+	void mockRepositoryFindAllNotFound();
 
-	void stubRepositoryFindAllError();
+	void mockRepositoryFindAllError();
 
 	T mockOne();
 
-	void stubRepositoryFindByIdOk(T mockedResult);
+	void mockRepositoryFindByIdOk(T mockedResult);
 
-	void stubRepositoryFindByIdNotFound(T mockedResult);
+	void mockRepositoryFindByIdNotFound(T mockedResult);
 
-	void stubRepositoryFindByIdError(T mockedResult);
+	void mockRepositoryFindByIdError(T mockedResult);
 
-	void stubRepositoryUpdateOk(T mockedResult);
+	void mockRepositoryUpdateOk(T mockedResult);
 
-	void stubRepositoryUpdateError(T mockedResult);
+	void mockRepositoryUpdateError(T mockedResult);
 
-	void stubRepositoryDeleteOk(T mockedResult);
+	void mockRepositoryDeleteOk(T mockedResult);
 
-	void stubRepositoryDeleteError(T mockedResult);
+	void mockRepositoryDeleteError(T mockedResult);
 
-	void stubRepositoryCreateOk(T mockedResult);
+	void mockRepositoryCreateOk(T mockedResult);
 	
-	void stubRepositoryCreateServerError(T mockedResult);
+	void mockRepositoryCreateServerError(T mockedResult);
 
-	void stubRepositoryCreateUknownError(T mockedResult);
+	void mockRepositoryCreateUknownError(T mockedResult);
 
-	void stubRepositoryUpdateUknownError(T mockedResult);
+	void mockRepositoryUpdateUknownError(T mockedResult);
 
-	void stubRepositoryDeleteUknownError(T mockedResult);
+	void mockRepositoryDeleteUknownError(T mockedResult);
 
-	void stubRepositoryDeleteNotFoundError(T mockedResult);
+	void mockRepositoryDeleteNotFoundError(T mockedResult);
 }
