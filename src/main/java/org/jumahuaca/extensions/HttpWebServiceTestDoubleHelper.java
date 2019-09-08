@@ -2,7 +2,7 @@ package org.jumahuaca.extensions;
 
 import java.util.List;
 
-public interface HttpWebServiceDoubleHelper<T> {
+public interface HttpWebServiceTestDoubleHelper<T> {
 	
 	List<T> mockSelectAllResult();
 	

@@ -10,7 +10,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 public class SpringControllerCrudExtension<T> implements Extension{
 	
-	public MvcResult requestAllShouldWork(HttpWebServiceDoubleHelper<T> helper, MockMvc mockMvc, String url) throws Exception{
+	public MvcResult requestAllShouldWork(HttpWebServiceTestDoubleHelper<T> helper, MockMvc mockMvc, String url) throws Exception{
 		List<T> mockedResult = helper.mockSelectAllResult();
 		helper.mockRepositoryFindAllOk(mockedResult);
 		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(url)
@@ -18,21 +18,21 @@ public class SpringControllerCrudExtension<T> implements Extension{
 		return result;
 	}
 	
-	public MvcResult requestAllShouldNotReturn(HttpWebServiceDoubleHelper<T> helper, MockMvc mockMvc, String url) throws Exception{
+	public MvcResult requestAllShouldNotReturn(HttpWebServiceTestDoubleHelper<T> helper, MockMvc mockMvc, String url) throws Exception{
 		helper.mockRepositoryFindAllNotFound();
 		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(url)
 				.accept(MediaType.APPLICATION_JSON_UTF8)).andReturn();
 		return result;
 	}
 	
-	public MvcResult requestAllShouldFail(HttpWebServiceDoubleHelper<T> helper, MockMvc mockMvc, String url) throws Exception{
+	public MvcResult requestAllShouldFail(HttpWebServiceTestDoubleHelper<T> helper, MockMvc mockMvc, String url) throws Exception{
 		helper.mockRepositoryFindAllError();
 		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(url)
 				.accept(MediaType.APPLICATION_JSON_UTF8)).andReturn();
 		return result;
 	}
 	
-	public MvcResult requestOneShouldWork(HttpWebServiceDoubleHelper<T> helper, MockMvc mockMvc, String url, Object... uriVars) throws Exception{
+	public MvcResult requestOneShouldWork(HttpWebServiceTestDoubleHelper<T> helper, MockMvc mockMvc, String url, Object... uriVars) throws Exception{
 		T mockedResult = helper.mockOne();
 		helper.mockRepositoryFindByIdOk(mockedResult);
 
@@ -41,7 +41,7 @@ public class SpringControllerCrudExtension<T> implements Extension{
 		return result;
 	}
 	
-	public MvcResult requestOneShouldNotFound(HttpWebServiceDoubleHelper<T> helper, MockMvc mockMvc, String url, Object... uriVars) throws Exception{
+	public MvcResult requestOneShouldNotFound(HttpWebServiceTestDoubleHelper<T> helper, MockMvc mockMvc, String url, Object... uriVars) throws Exception{
 		T mockedResult = helper.mockOne();
 		helper.mockRepositoryFindByIdNotFound(mockedResult);
 
@@ -50,7 +50,7 @@ public class SpringControllerCrudExtension<T> implements Extension{
 		return result;
 	}
 	
-	public MvcResult postShouldWork(HttpWebServiceDoubleHelper<T> helper, MockMvc mockMvc, String url, String jsonEntity) throws Exception {
+	public MvcResult postShouldWork(HttpWebServiceTestDoubleHelper<T> helper, MockMvc mockMvc, String url, String jsonEntity) throws Exception {
 		T mockedResult = helper.mockOne();
 		helper.mockRepositoryUpdateOk(mockedResult);
 		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(url)
@@ -59,7 +59,7 @@ public class SpringControllerCrudExtension<T> implements Extension{
 		return result;
 	}
 	
-	public MvcResult postShouldFail(HttpWebServiceDoubleHelper<T> helper, MockMvc mockMvc, String url, String jsonEntity) throws Exception {
+	public MvcResult postShouldFail(HttpWebServiceTestDoubleHelper<T> helper, MockMvc mockMvc, String url, String jsonEntity) throws Exception {
 		T mockedResult = helper.mockOne();
 		helper.mockRepositoryUpdateError(mockedResult);
 		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(url)
@@ -68,7 +68,7 @@ public class SpringControllerCrudExtension<T> implements Extension{
 		return result;
 	}
 	
-	public MvcResult putShouldWork(HttpWebServiceDoubleHelper<T> helper, MockMvc mockMvc, String url, String jsonEntity) throws Exception {
+	public MvcResult putShouldWork(HttpWebServiceTestDoubleHelper<T> helper, MockMvc mockMvc, String url, String jsonEntity) throws Exception {
 		T mockedResult = helper.mockOne();
 		helper.mockRepositoryUpdateOk(mockedResult);
 		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(url)
@@ -77,7 +77,7 @@ public class SpringControllerCrudExtension<T> implements Extension{
 		return result;
 	}
 	
-	public MvcResult putShouldFail(HttpWebServiceDoubleHelper<T> helper, MockMvc mockMvc, String url, String jsonEntity) throws Exception {
+	public MvcResult putShouldFail(HttpWebServiceTestDoubleHelper<T> helper, MockMvc mockMvc, String url, String jsonEntity) throws Exception {
 		T mockedResult = helper.mockOne();
 		helper.mockRepositoryUpdateError(mockedResult);
 		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(url)
@@ -86,7 +86,7 @@ public class SpringControllerCrudExtension<T> implements Extension{
 		return result;
 	}
 	
-	public MvcResult deleteShouldWork(HttpWebServiceDoubleHelper<T> helper, MockMvc mockMvc, String url, String jsonEntity) throws Exception {
+	public MvcResult deleteShouldWork(HttpWebServiceTestDoubleHelper<T> helper, MockMvc mockMvc, String url, String jsonEntity) throws Exception {
 		T mockedResult = helper.mockOne();
 		helper.mockRepositoryDeleteOk(mockedResult);
 		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(url)
@@ -95,7 +95,7 @@ public class SpringControllerCrudExtension<T> implements Extension{
 		return result;
 	}
 	
-	public MvcResult deleteShouldFail(HttpWebServiceDoubleHelper<T> helper, MockMvc mockMvc, String url, String jsonEntity) throws Exception {
+	public MvcResult deleteShouldFail(HttpWebServiceTestDoubleHelper<T> helper, MockMvc mockMvc, String url, String jsonEntity) throws Exception {
 		T mockedResult = helper.mockOne();
 		helper.mockRepositoryDeleteError(mockedResult);
 		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(url)
