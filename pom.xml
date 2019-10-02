@@ -85,6 +85,11 @@
 			<artifactId>spring-batch-infrastructure</artifactId>
 			<version>4.1.1.RELEASE</version>
 		</dependency>
+		<dependency>
+			<groupId>org.easybatch</groupId>
+			<artifactId>easybatch-core</artifactId>
+			<version>5.2.0</version>
+		</dependency>
 
 
 

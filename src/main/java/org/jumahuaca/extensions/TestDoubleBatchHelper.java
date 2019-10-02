@@ -1,11 +1,11 @@
 package org.jumahuaca.extensions;
 
-public interface SpringBatchChunkTestDoubleHelper<P> {
+public interface TestDoubleBatchHelper {
 
 	void mockInjectionsReadOk();
 
 	void mockInjectionsProcessOk();
-
+	
 	void mockInjectionsWriteOk();
 
 }

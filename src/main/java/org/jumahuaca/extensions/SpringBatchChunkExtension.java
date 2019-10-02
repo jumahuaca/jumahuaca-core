@@ -14,7 +14,7 @@ import org.springframework.batch.item.UnexpectedInputException;
 public class SpringBatchChunkExtension<R, P> implements Extension {
 
 	public List<P> simulateSimpleRun(ItemReader<R> reader, ItemProcessor<R, P> processor, ItemWriter<P> writer,
-			SpringBatchChunkTestDoubleHelper<P> helper)
+			TestDoubleBatchHelper helper)
 			throws UnexpectedInputException, ParseException, NonTransientResourceException, Exception {
 		helper.mockInjectionsReadOk();
 		helper.mockInjectionsProcessOk();
